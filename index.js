@@ -24,9 +24,9 @@ app.post('/auth/registration', registrationValidator, UserController.registratio
 app.get('/auth/me', CheckAuth, UserController.getMe);
 
 
-//app.get('/posts', PostController.getAll);
+app.get('/posts', PostController.getAll);
 
-//app.get('/posts/:id', PostController.getOne);
+app.get('/posts/:id', PostController.getOne);
 
 app.post('/posts', CheckAuth, postCreateValidator, PostController.create);
 
