@@ -5,6 +5,7 @@ import multer from 'multer';
 import { registrationValidator, loginValidator, postCreateValidator } from './Validations.js';
 
 import CheckAuth from './utils/CheckAuth.js';
+import handleValidationErrors from './utils/handleValidationErrors.js';
 
 import * as UserController from './controllers/UserController.js';
 import * as PostController from './controllers/PostController.js';
@@ -30,8 +31,8 @@ const upload = multer({ storage });
 app.use(express.json());
 app.use('/uploads', express.static('uploads'));
 
-app.post('/auth/login', loginValidator, UserController.login);
-app.post('/auth/registration', registrationValidator, UserController.registration);
+app.post('/auth/login', loginValidator, handleValidationErrors, UserController.login);
+app.post('/auth/registration', registrationValidator, handleValidationErrors, UserController.registration);
 app.get('/auth/me', CheckAuth, UserController.getMe);
 
 app.post('/upload', CheckAuth, upload.single('image'), (req, res) => {
@@ -42,9 +43,9 @@ app.post('/upload', CheckAuth, upload.single('image'), (req, res) => {
 
 app.get('/posts', PostController.getAll);
 app.get('/posts/:id', PostController.getOne);
-app.post('/posts', CheckAuth, postCreateValidator, PostController.create);
+app.post('/posts', CheckAuth, postCreateValidator, handleValidationErrors, PostController.create);
 app.delete('/posts/:id', CheckAuth, PostController.remove);
-app.patch('/posts/:id', CheckAuth, postCreateValidator, PostController.update);
+app.patch('/posts/:id', CheckAuth, postCreateValidator, handleValidationErrors, PostController.update);
 
 app.listen(4444, (err) => {
     if (err) {
