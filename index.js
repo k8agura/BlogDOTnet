@@ -1,6 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import multer from 'multer';
+import cors from 'cors';
 
 import { registrationValidator, loginValidator, postCreateValidator } from './Validations.js';
 
@@ -9,6 +10,7 @@ import handleValidationErrors from './utils/handleValidationErrors.js';
 
 import * as UserController from './controllers/UserController.js';
 import * as PostController from './controllers/PostController.js';
+import * as TagsController from './controllers/TagsController.js';
 
 mongoose
     .connect('mongodb+srv://admin:Battlefield228@cluster0.yqqnbrz.mongodb.net/blogdotnet?retryWrites=true&w=majority')
@@ -29,6 +31,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 app.use(express.json());
+app.use(cors());
 app.use('/uploads', express.static('uploads'));
 
 app.post('/auth/login', loginValidator, handleValidationErrors, UserController.login);
@@ -40,6 +43,8 @@ app.post('/upload', CheckAuth, upload.single('image'), (req, res) => {
         url: `/uploads/${req.file.originalname}`,
     });
 });
+
+app.get('/tags', TagsController.getLastTags);
 
 app.get('/posts', PostController.getAll);
 app.get('/posts/:id', PostController.getOne);
